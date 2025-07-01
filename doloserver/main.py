@@ -2,6 +2,8 @@ import firebase_admin
 from firebase_admin import credentials, messaging, firestore
 from flask import Flask, request
 import functions_framework
+from datetime import datetime
+
 
 app = Flask(__name__)
 
@@ -32,9 +34,13 @@ def listTokens():
 @app.route("/updatetoken", methods=["POST"])
 def updateToken():
     try:
+        now = datetime.now()
+        timestamp = now.timestamp()
+
         json = request.get_json()
+
         doc_ref = db.collection("instances").document(json['instance'])
-        doc_ref.set({"token": json['token'], "timestamp": json['timestamp']})
+        doc_ref.set({"token": json['token'], "timestamp": timestamp})
         response = "Success"
     except Exception as e:
         response = f"Error updating database: {e}"
