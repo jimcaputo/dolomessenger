@@ -23,7 +23,7 @@ def listTokens():
         instances = db.collection("instances")
         docs = instances.stream()
         for doc in docs:
-            response += (f"{doc.id} => {doc.to_dict()}<br>")
+            response += f"{doc.id} => {doc.to_dict()}<br>"
     except Exception as e:
         print(f"Error updating database: {e}")
     return response
@@ -57,12 +57,36 @@ def sendMessage():
 
         # Send the message
         response = messaging.send(message)
-        response = f"Successfully sent message: {response}"
+        response = "Successfully sent message"
     except Exception as e:
         response = f"Error sending message: {e}"
-
     return f"{{'Status': '{response}'}}"
-        
+
+
+@app.route("/broadcast", methods=['POST'])
+def broadcast():
+    try:
+        response = ""
+        json = request.get_json()
+
+        instances = db.collection("instances")
+        docs = instances.stream()
+        for doc in docs:
+            # Construct the message
+            message = messaging.Message(
+                notification = messaging.Notification(
+                    title = json['title'],
+                    body = json['body'],
+                ),
+                token = doc.to_dict()['token']
+            )
+            # Send the message
+            messaging.send(message)
+        response = "Successfully broadcast message"
+    except Exception as e:
+        response = f"Error sending message: {e}"
+    return f"{{'Status': '{response}'}}"
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(8080))
