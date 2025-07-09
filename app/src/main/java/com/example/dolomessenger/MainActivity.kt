@@ -6,12 +6,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,12 +25,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DoLoMessengerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                HomeScreenContent()
             }
         }
     }
@@ -39,42 +33,39 @@ class MainActivity : ComponentActivity() {
     private fun requestPermissions() {
         var permissions = emptyArray<String>()
 
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
         ) {
             permissions += Manifest.permission.POST_NOTIFICATIONS
         }
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED
         ) {
             permissions += Manifest.permission.RECORD_AUDIO
         }
 
         if (permissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                this,
-                permissions,
-                0
-            )
+            ActivityCompat.requestPermissions(this, permissions, 0)
         }
         // TODO - handle the scenario where permissions are not approved
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun HomeScreenContent() {
+    var state by rememberSaveable { mutableStateOf("None") }
+
+    when (state) {
+        "None" -> { ActivationScreen { state = it } }
+        "Sender" -> SenderScreen()
+        "Receiver" -> ReceiverScreen()
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun DoLoMessengerPreview() {
     DoLoMessengerTheme {
-        Greeting("Android")
+        HomeScreenContent()
     }
 }
