@@ -22,10 +22,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         requestPermissions()
+        SpeechRecognitionManager.create(applicationContext)
 
         setContent {
             DoLoMessengerTheme {
-                HomeScreenContent()
+                HomeScreen()
             }
         }
     }
@@ -52,12 +53,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreenContent() {
-    var state by rememberSaveable { mutableStateOf("None") }
+fun HomeScreen() {
+    var state by rememberSaveable { mutableStateOf("Activation") }
 
     when (state) {
-        "None" -> { ActivationScreen { state = it } }
-        "Sender" -> SenderScreen()
+        "Activation" -> { ActivationScreen { state = it } }
+        "Sender" -> SenderScreen {state = it}
         "Receiver" -> ReceiverScreen()
     }
 }
@@ -66,6 +67,6 @@ fun HomeScreenContent() {
 @Composable
 fun DoLoMessengerPreview() {
     DoLoMessengerTheme {
-        HomeScreenContent()
+        HomeScreen()
     }
 }
