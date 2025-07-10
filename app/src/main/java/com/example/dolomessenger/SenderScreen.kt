@@ -34,9 +34,10 @@ fun SenderScreen(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Bottom
     ) {
-        Button(onClick = {
-            onStateChange("Activation")
-        }) {
+        Button(
+            onClick = { onStateChange("Activation") }
+            // enabled = TODO - need to disable this button if Capture is active
+        ) {
             Text(text = "Deactivate")
         }
     }

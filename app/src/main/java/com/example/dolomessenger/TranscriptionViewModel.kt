@@ -46,9 +46,7 @@ class TranscriptionViewModel : ViewModel() {
         if (messages != "") messages += "\n"
         messages += message
 
-        val localToken = Firebase.messaging.token.await()
-
-
+         DoLoServerAPI.broadcastMessage(message)
     }
 
     private fun appendTranscription(text: String) {

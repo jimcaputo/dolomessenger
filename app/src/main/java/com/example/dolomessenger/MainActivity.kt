@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
 
         requestPermissions()
         SpeechRecognitionManager.create(applicationContext)
+        DoLoServerAPI.create(applicationContext)
 
         setContent {
             DoLoMessengerTheme {
