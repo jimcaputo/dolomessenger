@@ -11,8 +11,8 @@ import org.json.JSONObject
 object DoLoServerAPI {
     lateinit var requestQueue: RequestQueue
 
-    val url = "https://doloserver-569184823432.us-east1.run.app/broadcast"
-    //val url = "http://10.0.2.2:8080/broadcast"
+    //val url = "https://doloserver-569184823432.us-east1.run.app/broadcast"
+    val url = "http://10.0.2.2:8080/broadcast"
 
     fun create(context: Context) {
         requestQueue = Volley.newRequestQueue(context)

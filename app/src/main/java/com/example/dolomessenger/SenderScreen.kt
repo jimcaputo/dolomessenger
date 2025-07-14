@@ -27,6 +27,21 @@ fun SenderScreen(
     tvm: TranscriptionViewModel = viewModel(),
     onStateChange: (String) -> Unit
 ) {
+    var captureActive by rememberSaveable { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .statusBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Controls(tvm, { captureActive = it })
+        HelpPhraseContent(tvm)
+        ActivationPhraseContent(tvm)
+        TranscriptionContent(tvm)
+        ErrorContent(tvm)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,29 +50,19 @@ fun SenderScreen(
         verticalArrangement = Arrangement.Bottom
     ) {
         Button(
-            onClick = { onStateChange("Activation") }
-            // enabled = TODO - need to disable this button if Capture is active
+            onClick = { onStateChange("Activation") },
+            enabled = !captureActive
         ) {
-            Text(text = "Deactivate")
+            Text(text = "Switch App Mode")
         }
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp)
-            .statusBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Controls(tvm)
-        HelpPhraseContent(tvm)
-        ActivationPhraseContent(tvm)
-        TranscriptionContent(tvm)
-        ErrorContent(tvm)
     }
 }
 
 @Composable
-fun Controls(tvm: TranscriptionViewModel) {
+fun Controls(
+    tvm: TranscriptionViewModel,
+    onCaptureActiveChange: (Boolean) -> Unit
+) {
     var buttonCapture by rememberSaveable { mutableStateOf("Start Capture") }
 
     Row(
@@ -71,9 +76,11 @@ fun Controls(tvm: TranscriptionViewModel) {
                     tvm.reset()
                     SpeechRecognitionManager.start(tvm)
                     buttonCapture = "Stop Capture"
+                    onCaptureActiveChange(true)
                 } else {
                     SpeechRecognitionManager.stop()
                     buttonCapture = "Start Capture"
+                    onCaptureActiveChange(false)
                 }
             }
         ) {
