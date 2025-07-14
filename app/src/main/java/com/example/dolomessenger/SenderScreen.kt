@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun SenderScreen(
-    tvm: TranscriptionViewModel = viewModel(),
+    svm: SenderViewModel,
     onStateChange: (String) -> Unit
 ) {
     var captureActive by rememberSaveable { mutableStateOf(false) }
@@ -36,11 +36,11 @@ fun SenderScreen(
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Controls(tvm, { captureActive = it })
-        HelpPhraseContent(tvm)
-        ActivationPhraseContent(tvm)
-        TranscriptionContent(tvm)
-        ErrorContent(tvm)
+        Controls(svm) { captureActive = it }
+        HelpPhraseContent(svm)
+        ActivationPhraseContent(svm)
+        TranscriptionContent(svm)
+        ErrorContent(svm)
     }
     Column(
         modifier = Modifier
@@ -60,7 +60,7 @@ fun SenderScreen(
 
 @Composable
 fun Controls(
-    tvm: TranscriptionViewModel,
+    svm: SenderViewModel,
     onCaptureActiveChange: (Boolean) -> Unit
 ) {
     var buttonCapture by rememberSaveable { mutableStateOf("Start Capture") }
@@ -73,8 +73,8 @@ fun Controls(
             modifier = Modifier.padding(10.dp),
             onClick = {
                 if (buttonCapture == "Start Capture") {
-                    tvm.reset()
-                    SpeechRecognitionManager.start(tvm)
+                    svm.reset()
+                    SpeechRecognitionManager.start(svm)
                     buttonCapture = "Stop Capture"
                     onCaptureActiveChange(true)
                 } else {
@@ -91,7 +91,7 @@ fun Controls(
         Button(
             modifier = Modifier.padding(10.dp),
             onClick = {
-                tvm.reset()
+                svm.reset()
             }
         ) {
             Text(
@@ -102,13 +102,13 @@ fun Controls(
 }
 
 @Composable
-fun HelpPhraseContent(tvm: TranscriptionViewModel) {
+fun HelpPhraseContent(svm: SenderViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         TextField(
-            value = tvm.helpPhrase,
-            onValueChange = { tvm.helpPhrase = it },
+            value = svm.helpPhrase,
+            onValueChange = { svm.helpPhrase = it },
             label = { Text("Enter Help Phrase") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -121,20 +121,20 @@ fun HelpPhraseContent(tvm: TranscriptionViewModel) {
             .padding(20.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        if (tvm.helpPhraseTriggered) {
+        if (svm.helpPhraseTriggered) {
             Text(color = Color.Red, text = "Help Phrase Triggered")
         }
     }
 }
 
 @Composable
-fun ActivationPhraseContent(tvm: TranscriptionViewModel) {
+fun ActivationPhraseContent(svm: SenderViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         TextField(
-            value = tvm.activationPhrase,
-            onValueChange = { tvm.activationPhrase = it },
+            value = svm.activationPhrase,
+            onValueChange = { svm.activationPhrase = it },
             label = { Text("Enter Activation Phrase") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -143,21 +143,21 @@ fun ActivationPhraseContent(tvm: TranscriptionViewModel) {
 }
 
 @Composable
-fun TranscriptionContent(tvm: TranscriptionViewModel) {
+fun TranscriptionContent(svm: SenderViewModel) {
     Row(
         modifier = Modifier.padding(20.dp)
     ) {
-        Text(text = tvm.messages)
+        Text(text = svm.messages)
     }
     Row(
         modifier = Modifier.padding(20.dp)
     ) {
-        Text(text = tvm.transcription)
+        Text(text = svm.transcription)
     }
 }
 
 @Composable
-fun ErrorContent(tvm: TranscriptionViewModel) {
+fun ErrorContent(svm: SenderViewModel) {
     Column(
         modifier = Modifier
             .padding(vertical = 70.dp)
@@ -165,7 +165,7 @@ fun ErrorContent(tvm: TranscriptionViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        Text(text = tvm.errors)
+        Text(text = svm.errors)
     }
 }
 
@@ -174,5 +174,6 @@ fun ErrorContent(tvm: TranscriptionViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun SenderScreenPreview() {
-    SenderScreen { }
+    val svm: SenderViewModel = viewModel()
+    SenderScreen(svm) { }
 }

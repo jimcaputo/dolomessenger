@@ -40,7 +40,7 @@ def updateToken():
         json = request.get_json()
 
         doc_ref = db.collection("instances").document(json['instance'])
-        doc_ref.set({"token": json['token'], "timestamp": timestamp})
+        doc_ref.set({"device": json['device'], "token": json['token'], "timestamp": timestamp})
         response = "Success"
     except Exception as e:
         response = f"Error updating database: {e}"
@@ -62,7 +62,7 @@ def sendMessage():
         )
 
         # Send the message
-        response = messaging.send(message)
+        messaging.send(message)
         response = "Successfully sent message"
     except Exception as e:
         response = f"Error sending message: {e}"

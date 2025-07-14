@@ -11,9 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun ReceiverScreen(onStateChange: (String) -> Unit) {
+fun ReceiverScreen(
+    rvm: ReceiverViewModel,
+    onStateChange: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,5 +44,6 @@ fun ReceiverScreen(onStateChange: (String) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ReceiverScreenPreview() {
-    ReceiverScreen { }
+    val rvm: ReceiverViewModel = viewModel()
+    ReceiverScreen(rvm) { }
 }

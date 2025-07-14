@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-class TranscriptionViewModel : ViewModel() {
+class SenderViewModel : ViewModel() {
     var helpPhrase by mutableStateOf("I need help Donald")
     var helpPhraseTriggered by mutableStateOf(false)
     var activationPhrase by mutableStateOf("Hey Donald")

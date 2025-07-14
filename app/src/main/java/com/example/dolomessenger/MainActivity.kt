@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.dolomessenger.ui.theme.DoLoMessengerTheme
 import androidx.core.content.edit
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,32 +59,39 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HomeScreen() {
-    val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("DoLo Messenger", Context.MODE_PRIVATE)
+    val sharedPref = LocalContext.current.getSharedPreferences("DoLo Messenger", Context.MODE_PRIVATE)
     val appModeSaved = sharedPref.getString("App Mode", "Activation") ?: "Activation"
 
     var appMode by rememberSaveable { mutableStateOf(appModeSaved) }
 
     when (appMode) {
-        "Activation" -> ActivationScreen {
-            appMode = it
-            sharedPref.edit {
-                putString("App Mode", appMode)
-                apply()
+        "Activation" -> {
+            ActivationScreen {
+                appMode = it
+                sharedPref.edit {
+                    putString("App Mode", appMode)
+                    apply()
+                }
             }
         }
-        "Sender" -> SenderScreen {
-            appMode = it
-            sharedPref.edit {
-                putString("App Mode", "Activation")
-                apply()
+        "Sender" -> {
+            val svm: SenderViewModel = viewModel()
+            SenderScreen(svm) {
+                appMode = it
+                sharedPref.edit {
+                    putString("App Mode", "Activation")
+                    apply()
+                }
             }
         }
-        "Receiver" -> ReceiverScreen {
-            appMode = it
-            sharedPref.edit {
-                putString("App Mode", "Activation")
-                apply()
+        "Receiver" -> {
+            val rvm: ReceiverViewModel = viewModel()
+            ReceiverScreen(rvm) {
+                appMode = it
+                sharedPref.edit {
+                    putString("App Mode", "Activation")
+                    apply()
+                }
             }
         }
     }

@@ -11,7 +11,7 @@ import android.speech.SpeechRecognizer
 
 object SpeechRecognitionManager: RecognitionListener {
 
-    private lateinit var transcriptionViewModel: TranscriptionViewModel
+    private lateinit var svm: SenderViewModel
 
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var speechIntent: Intent
@@ -39,9 +39,9 @@ object SpeechRecognitionManager: RecognitionListener {
         speechRecognizer.setRecognitionListener(this)
     }
 
-    fun start(transcriptionViewModel: TranscriptionViewModel) {
-        this.transcriptionViewModel = transcriptionViewModel
-        this.transcriptionViewModel.reset()
+    fun start(svm: SenderViewModel) {
+        this.svm = svm
+        this.svm.reset()
         speechRecognizer.startListening(speechIntent)
         active = true
     }
@@ -52,19 +52,17 @@ object SpeechRecognitionManager: RecognitionListener {
     }
 
     override fun onError(errorCode: Int) {
-        val tvm = transcriptionViewModel
-
         // http://developer.android.com/reference/android/speech/SpeechRecognizer.html
         when (errorCode) {
-            SpeechRecognizer.ERROR_AUDIO -> tvm.appendError("Audio recording error")
-            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> tvm.appendError("Insufficient permissions")
-            SpeechRecognizer.ERROR_NETWORK -> tvm.appendError("Network error")
-            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> tvm.appendError("Network timeout")
-            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> tvm.appendError("RecognitionService busy")
-            SpeechRecognizer.ERROR_SERVER -> tvm.appendError("Error from server")
-            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> tvm.appendError("No speech input")
-            SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE -> tvm.appendError("Language not available (ie downloaded yet)")
-            SpeechRecognizer.ERROR_CLIENT -> { tvm.appendError("Client side error")
+            SpeechRecognizer.ERROR_AUDIO -> svm.appendError("Audio recording error")
+            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> svm.appendError("Insufficient permissions")
+            SpeechRecognizer.ERROR_NETWORK -> svm.appendError("Network error")
+            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> svm.appendError("Network timeout")
+            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> svm.appendError("RecognitionService busy")
+            SpeechRecognizer.ERROR_SERVER -> svm.appendError("Error from server")
+            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> svm.appendError("No speech input")
+            SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE -> svm.appendError("Language not available (ie downloaded yet)")
+            SpeechRecognizer.ERROR_CLIENT -> { svm.appendError("Client side error")
                 // TODO: Unclear what causes us to land here intermittently, but we will need to restart.
                 // And it will need to triggered by the user, so need to build UI flow for this.
                 // Unfortunately attempting to stop / start causes a bad loop. So we'll need to stop and
@@ -77,7 +75,7 @@ object SpeechRecognitionManager: RecognitionListener {
                     speechRecognizer.startListening(speechIntent)
                 }
             }
-            else -> tvm.appendError("Error Code: $errorCode")
+            else -> svm.appendError("Error Code: $errorCode")
         }
     }
 
@@ -85,7 +83,7 @@ object SpeechRecognitionManager: RecognitionListener {
         val words = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
 
         if (words != null) {
-            transcriptionViewModel.onTranscription(words[0])
+            svm.onTranscription(words[0])
 
             if (active) {
                 speechRecognizer.startListening(speechIntent)
