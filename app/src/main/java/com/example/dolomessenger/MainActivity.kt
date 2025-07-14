@@ -1,6 +1,7 @@
 package com.example.dolomessenger
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,10 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.dolomessenger.ui.theme.DoLoMessengerTheme
+import androidx.core.content.edit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,12 +58,34 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HomeScreen() {
-    var state by rememberSaveable { mutableStateOf("Activation") }
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("DoLo Messenger", Context.MODE_PRIVATE)
+    val appModeSaved = sharedPref.getString("App Mode", "Activation") ?: "Activation"
 
-    when (state) {
-        "Activation" -> { ActivationScreen { state = it } }
-        "Sender" -> SenderScreen {state = it}
-        "Receiver" -> ReceiverScreen()
+    var appMode by rememberSaveable { mutableStateOf(appModeSaved) }
+
+    when (appMode) {
+        "Activation" -> ActivationScreen {
+            appMode = it
+            sharedPref.edit {
+                putString("App Mode", appMode)
+                apply()
+            }
+        }
+        "Sender" -> SenderScreen {
+            appMode = it
+            sharedPref.edit {
+                putString("App Mode", "Activation")
+                apply()
+            }
+        }
+        "Receiver" -> ReceiverScreen {
+            appMode = it
+            sharedPref.edit {
+                putString("App Mode", "Activation")
+                apply()
+            }
+        }
     }
 }
 
