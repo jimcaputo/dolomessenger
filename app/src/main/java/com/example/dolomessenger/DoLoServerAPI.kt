@@ -1,6 +1,7 @@
 package com.example.dolomessenger
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.content.edit
 import com.android.volley.RequestQueue
@@ -13,9 +14,10 @@ import org.json.JSONObject
 
 object DoLoServerAPI {
     private lateinit var requestQueue: RequestQueue
+    private lateinit var sharedPref: SharedPreferences
 
-    // private const val SERVER = "https://doloserver-569184823432.us-east1.run.app"
-    private const val SERVER = "http://10.0.2.2:8080"
+    // var server = "https://doloserver-569184823432.us-east1.run.app"
+    var server = "http://10.0.2.2:8080"
 
     private var uuid = ""
     private var device = ""
@@ -23,7 +25,9 @@ object DoLoServerAPI {
     fun create(context: Context) {
         requestQueue = Volley.newRequestQueue(context)
 
-        val sharedPref = context.getSharedPreferences("DoLo Messenger", Context.MODE_PRIVATE)
+        sharedPref = context.getSharedPreferences("DoLo Messenger", Context.MODE_PRIVATE)
+
+        server = sharedPref.getString("Server", server) ?: server
 
         uuid = sharedPref.getString("UUID", "") ?: ""
         if (uuid == "") {
@@ -33,7 +37,6 @@ object DoLoServerAPI {
                 apply()
             }
         }
-
         device = sharedPref.getString("Device", "") ?: ""
         if (device == "") {
             device = Build.MODEL
@@ -41,6 +44,14 @@ object DoLoServerAPI {
                 putString("Device", device)
                 apply()
             }
+        }
+    }
+
+    fun updateServer(server: String) {
+        this.server = server
+        sharedPref.edit {
+            putString("Server", server)
+            apply()
         }
     }
 
@@ -55,7 +66,7 @@ object DoLoServerAPI {
             e.printStackTrace()
         }
 
-        val url = "$SERVER/updatetoken"
+        val url = "$server/updatetoken"
         val request = JsonObjectRequest(
             Request.Method.POST,
             url,
@@ -82,7 +93,7 @@ object DoLoServerAPI {
             e.printStackTrace()
         }
 
-        val url = "$SERVER/broadcast"
+        val url = "$server/broadcast"
         val request = JsonObjectRequest(
             Request.Method.POST,
             url,

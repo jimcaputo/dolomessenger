@@ -114,7 +114,6 @@ fun HelpPhraseContent(svm: SenderViewModel) {
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-
     }
     Row(
         modifier = Modifier
@@ -169,7 +168,6 @@ fun ErrorContent(svm: SenderViewModel) {
         Text(text = svm.errors)
     }
 }
-
 
 
 @Preview(showBackground = true)
