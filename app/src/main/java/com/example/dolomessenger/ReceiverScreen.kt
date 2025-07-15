@@ -2,6 +2,7 @@ package com.example.dolomessenger
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -24,7 +25,16 @@ fun ReceiverScreen(
             .padding(60.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Receiver Screen")
+        Row(
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Text(text = "Notifications")
+        }
+        Row(
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Text(text = rvm.notifications)
+        }
     }
     Column(
         modifier = Modifier

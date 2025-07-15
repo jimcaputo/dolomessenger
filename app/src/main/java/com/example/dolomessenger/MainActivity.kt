@@ -87,6 +87,7 @@ fun HomeScreen() {
         }
         "Receiver" -> {
             val rvm: ReceiverViewModel = viewModel()
+            NotificationManager.create(rvm)
             ReceiverScreen(rvm) {
                 appMode = it
                 sharedPref.edit {
