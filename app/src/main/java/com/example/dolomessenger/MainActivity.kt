@@ -76,6 +76,7 @@ fun HomeScreen() {
         }
         "Sender" -> {
             val svm: SenderViewModel = viewModel()
+            svm.create(LocalContext.current)
             SenderScreen(svm) {
                 appMode = it
                 sharedPref.edit {

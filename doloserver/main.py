@@ -72,7 +72,6 @@ def http_broadcast():
         instances = db.collection("instances")
         docs = instances.stream()
         for doc in docs:
-            print(doc.to_dict()['token'])
             if doc.to_dict()['token'] != "":
                 response = send_message(
                     doc.id,

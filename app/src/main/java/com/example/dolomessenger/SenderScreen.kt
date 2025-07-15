@@ -1,5 +1,6 @@
 package com.example.dolomessenger
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,8 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
@@ -108,7 +111,7 @@ fun HelpPhraseContent(svm: SenderViewModel) {
     ) {
         TextField(
             value = svm.helpPhrase,
-            onValueChange = { svm.helpPhrase = it },
+            onValueChange = { svm.updateHelpPhrase(it) },
             label = { Text("Enter Help Phrase") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -134,7 +137,7 @@ fun ActivationPhraseContent(svm: SenderViewModel) {
     ) {
         TextField(
             value = svm.activationPhrase,
-            onValueChange = { svm.activationPhrase = it },
+            onValueChange = { svm.updateActivationPhrase(it) },
             label = { Text("Enter Activation Phrase") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -175,5 +178,6 @@ fun ErrorContent(svm: SenderViewModel) {
 @Composable
 fun SenderScreenPreview() {
     val svm: SenderViewModel = viewModel()
+    svm.create(LocalContext.current)
     SenderScreen(svm) { }
 }

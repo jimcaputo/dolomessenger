@@ -75,7 +75,7 @@ object DoLoServerAPI {
     fun broadcastMessage(message: String) {
         val data = JSONObject()
         try {
-            data.put("title", "Real Title")
+            data.put("title", "DoLo Message")
             data.put("body", message)
         }
         catch (e: JSONException) {
