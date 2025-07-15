@@ -4,7 +4,6 @@ from flask import Flask, request
 import functions_framework
 from datetime import datetime
 
-
 app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
@@ -17,9 +16,8 @@ db = firestore.client()
 def home():
     return "Hello DoLo"
 
-
 @app.route("/listtokens", methods=["GET"])
-def listTokens():
+def http_listtokens():
     response = ""
     try:
         instances = db.collection("instances")
@@ -30,67 +28,64 @@ def listTokens():
         print(f"Error updating database: {e}")
     return response
 
-
-@app.route("/updatetoken", methods=["POST"])
-def updateToken():
+def update_token(uuid, device, token):
     try:
-        now = datetime.now()
-        timestamp = now.timestamp()
-
-        json = request.get_json()
-
-        doc_ref = db.collection("instances").document(json['instance'])
-        doc_ref.set({"device": json['device'], "token": json['token'], "timestamp": timestamp})
+        doc_ref = db.collection("instances").document(uuid)
+        doc_ref.set({"device": device, "token": token, "timestamp": datetime.now().timestamp()})
         response = "Success"
     except Exception as e:
         response = f"Error updating database: {e}"
-    return f"{{'Status': '{response}''}}"
+    return response
 
-
-@app.route("/sendmessage", methods=["POST"])
-def sendMessage():
+@app.route("/updatetoken", methods=["POST"])
+def http_updatetoken():
     try:
         json = request.get_json()
-  
-        # Construct the message
-        message = messaging.Message(
-            notification = messaging.Notification(
-                title = json['title'],
-                body = json['body'],
-            ),
-            token = json['to']
-        )
-
-        # Send the message
-        messaging.send(message)
-        response = "Successfully sent message"
+        response = update_token(json['uuid'], json['device'], json['token'])
     except Exception as e:
-        response = f"Error sending message: {e}"
+        response = f"Error updating database: {e}"
     return f"{{'Status': '{response}'}}"
 
+def send_message(uuid, device, token, title, body):
+    try:
+        message = messaging.Message(
+            notification = messaging.Notification(
+                title = title,
+                body = body,
+            ),
+            token = token
+        )
+        messaging.send(message)
+        response = "Success"
+    except (firebase_admin.exceptions.InvalidArgumentError, messaging.UnregisteredError) as e:
+        # Handle the unregistered token by erasing it from the database
+        update_token(uuid, device, "")
+        response = "Success"
+    except Exception as e:
+        response = f"UUID: {uuid}. Error sending message to: {e}"
+    return response
 
 @app.route("/broadcast", methods=['POST'])
-def broadcast():
+def http_broadcast():
     try:
-        response = ""
         json = request.get_json()
-
         instances = db.collection("instances")
         docs = instances.stream()
         for doc in docs:
-            # Construct the message
-            message = messaging.Message(
-                notification = messaging.Notification(
-                    title = json['title'],
-                    body = json['body'],
-                ),
-                token = doc.to_dict()['token']
-            )
-            # Send the message
-            messaging.send(message)
-        response = "Successfully broadcast message"
+            print(doc.to_dict()['token'])
+            if doc.to_dict()['token'] != "":
+                response = send_message(
+                    doc.id,
+                    doc.to_dict()['device'],
+                    doc.to_dict()['token'],
+                    json['title'],
+                    json['body'])
+                if response != "Success":
+                    return f"{{'Status': '{response}'}}"
+        response = "Success"
     except Exception as e:
-        response = f"Error sending message: {e}"
+        response = f"Error broadcasting message: {e}"
+
     return f"{{'Status': '{response}'}}"
 
 
