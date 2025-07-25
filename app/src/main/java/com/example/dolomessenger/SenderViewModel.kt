@@ -15,9 +15,9 @@ class SenderViewModel : ViewModel() {
     var activationPhrase by mutableStateOf("Send Message")
     var messages by mutableStateOf("Activated messages")
     var transcription by mutableStateOf("Full transcription")
-    var errors by mutableStateOf("Speech recognition errors")
+    var errors by mutableStateOf("Errors")
 
-    lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPref: SharedPreferences
 
     fun create(context: Context) {
         sharedPref = context.getSharedPreferences("DoLo Messenger", Context.MODE_PRIVATE)
@@ -45,7 +45,7 @@ class SenderViewModel : ViewModel() {
         appendTranscription(transcription)
 
         if (transcription.contains(helpPhrase, ignoreCase = true)) {
-            DoLoServerAPI.broadcastMessage(helpPhrase)
+            DoLoServerAPI.broadcastMessage(helpPhrase, this)
 
             helpPhraseTriggered = true
             object : CountDownTimer(5000, 5000) {
@@ -74,7 +74,7 @@ class SenderViewModel : ViewModel() {
         if (messages != "") messages += "\n"
         messages += message
 
-         DoLoServerAPI.broadcastMessage(message)
+         DoLoServerAPI.broadcastMessage(message, this)
     }
 
     private fun appendTranscription(text: String) {

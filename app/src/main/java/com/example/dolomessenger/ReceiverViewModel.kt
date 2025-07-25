@@ -16,7 +16,7 @@ class ReceiverViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             val token = Firebase.messaging.token.await()
-            DoLoServerAPI.updateToken(token)
+            DoLoServerAPI.updateToken(token, this@ReceiverViewModel)
         }
     }
 

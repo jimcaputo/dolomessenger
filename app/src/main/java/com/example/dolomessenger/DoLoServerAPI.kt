@@ -55,7 +55,7 @@ object DoLoServerAPI {
         }
     }
 
-    fun updateToken(token: String) {
+    fun updateToken(token: String, rvm: ReceiverViewModel?) {
         val data = JSONObject()
         try {
             data.put("uuid", uuid)
@@ -71,19 +71,17 @@ object DoLoServerAPI {
             Request.Method.POST,
             url,
             data,
-            { resp ->
-                // TODO - do something with successful response
-                val response = resp.toString()
+            {
+                // Nothing to report on success
             },
             { error ->
-                // TODO - do something with error response
-                val response = error.message.toString()
+                rvm?.appendNotification(error.message.toString())
             })
 
         requestQueue.add(request)
     }
 
-    fun broadcastMessage(message: String) {
+    fun broadcastMessage(message: String, svm: SenderViewModel) {
         val data = JSONObject()
         try {
             data.put("title", "DoLo Message")
@@ -99,12 +97,12 @@ object DoLoServerAPI {
             url,
             data,
             { resp ->
-                // TODO - do something with successful response
-                val response = resp.toString()
+                if (!resp.toString().contains("Success", ignoreCase = true)) {
+                    svm.appendError(resp.toString())
+                }
             },
             { error ->
-                // TODO - do something with error response
-                val response = error.message.toString()
+                svm.appendError(error.message.toString())
             })
 
         requestQueue.add(request)

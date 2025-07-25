@@ -8,7 +8,7 @@ class PushNotificationService: FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-        DoLoServerAPI.updateToken(token)
+        DoLoServerAPI.updateToken(token, null)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
