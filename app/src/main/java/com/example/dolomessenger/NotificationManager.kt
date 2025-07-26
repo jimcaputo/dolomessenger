@@ -1,4 +1,4 @@
-package com.example.dolomessenger
+package com.dolphinbaycapital.dolomessenger
 
 object NotificationManager {
     lateinit var rvm: ReceiverViewModel

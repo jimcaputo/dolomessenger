@@ -1,4 +1,4 @@
-package com.example.dolomessenger
+package com.dolphinbaycapital.dolomessenger
 
 import org.junit.Test
 

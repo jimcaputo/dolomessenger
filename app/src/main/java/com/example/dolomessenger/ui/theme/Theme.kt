@@ -1,4 +1,4 @@
-package com.example.dolomessenger.ui.theme
+package com.dolphinbaycapital.dolomessenger.ui.theme
 
 import android.app.Activity
 import android.os.Build

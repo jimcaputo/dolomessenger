@@ -1,4 +1,4 @@
-package com.example.dolomessenger
+package com.dolphinbaycapital.dolomessenger
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
