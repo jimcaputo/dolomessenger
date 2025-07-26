@@ -10,6 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +23,9 @@ import androidx.compose.ui.unit.dp
 fun ActivationScreen(
     onStateChange: (String) -> Unit
 ) {
+    // Create variable that updates UI, since DoLoServerAPI is not a View Model
+    var server by rememberSaveable { mutableStateOf(DoLoServerAPI.server) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,8 +63,11 @@ fun ActivationScreen(
         verticalArrangement = Arrangement.Bottom
     ) {
         TextField(
-            value = DoLoServerAPI.server,
-            onValueChange = { DoLoServerAPI.updateServer(it) },
+            value = server,
+            onValueChange = {
+                server = it
+                DoLoServerAPI.updateServer(it)
+            },
             label = { Text("Server URL") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
