@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

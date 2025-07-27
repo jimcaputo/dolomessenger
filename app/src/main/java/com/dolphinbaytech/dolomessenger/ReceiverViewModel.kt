@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

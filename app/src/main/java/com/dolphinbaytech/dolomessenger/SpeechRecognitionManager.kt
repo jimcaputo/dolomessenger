@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 
 import android.content.Context
@@ -40,8 +40,8 @@ object SpeechRecognitionManager: RecognitionListener {
     }
 
     fun start(svm: SenderViewModel) {
-        this.svm = svm
-        this.svm.reset()
+        SpeechRecognitionManager.svm = svm
+        SpeechRecognitionManager.svm.reset()
         speechRecognizer.startListening(speechIntent)
         active = true
     }

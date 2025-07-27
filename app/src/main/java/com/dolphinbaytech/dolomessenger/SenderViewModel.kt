@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -74,7 +74,7 @@ class SenderViewModel : ViewModel() {
         if (messages != "") messages += "\n"
         messages += message
 
-         DoLoServerAPI.broadcastMessage(message, this)
+        DoLoServerAPI.broadcastMessage(message, this)
     }
 
     private fun appendTranscription(text: String) {

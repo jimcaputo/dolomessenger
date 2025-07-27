@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 import android.Manifest
 import android.content.Context
@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.dolphinbaycapital.dolomessenger.ui.theme.DoLoMessengerTheme
+import com.dolphinbaytech.dolomessenger.ui.theme.DoLoMessengerTheme
 import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 

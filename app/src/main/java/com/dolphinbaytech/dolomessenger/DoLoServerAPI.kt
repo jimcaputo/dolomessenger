@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,8 +16,8 @@ object DoLoServerAPI {
     private lateinit var requestQueue: RequestQueue
     private lateinit var sharedPref: SharedPreferences
 
-    // var server = "https://doloserver-569184823432.us-east1.run.app"
-    var server = "http://10.0.2.2:8080"
+    var server = "https://doloserver-569184823432.us-east1.run.app"
+    //var server = "http://10.0.2.2:8080"
 
     private var uuid = ""
     private var device = ""
@@ -48,7 +48,7 @@ object DoLoServerAPI {
     }
 
     fun updateServer(server: String) {
-        this.server = server
+        DoLoServerAPI.server = server
         sharedPref.edit {
             putString("Server", server)
             apply()

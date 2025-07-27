@@ -1,9 +1,9 @@
-package com.dolphinbaycapital.dolomessenger
+package com.dolphinbaytech.dolomessenger
 
 object NotificationManager {
     lateinit var rvm: ReceiverViewModel
 
     fun create(rvm: ReceiverViewModel) {
-        this.rvm = rvm
+        NotificationManager.rvm = rvm
     }
 }

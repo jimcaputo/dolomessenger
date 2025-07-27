@@ -1,4 +1,4 @@
-package com.dolphinbaycapital.dolomessenger.ui.theme
+package com.dolphinbaytech.dolomessenger.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

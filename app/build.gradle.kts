@@ -7,15 +7,15 @@ plugins {
 }
 
 android {
-    namespace = "com.dolphinbaycapital.dolomessenger"
+    namespace = "com.dolphinbaytech.dolomessenger"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.dolphinbaycapital.dolomessenger"
+        applicationId = "com.dolphinbaytech.dolomessenger"
         minSdk = 33
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2"
+        versionCode = 4
+        versionName = "0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
