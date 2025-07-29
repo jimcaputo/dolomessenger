@@ -1,9 +1,13 @@
 package com.dolphinbaytech.dolomessenger
 
 object NotificationManager {
-    lateinit var rvm: ReceiverViewModel
+    private var rvm: ReceiverViewModel? = null
 
     fun create(rvm: ReceiverViewModel) {
         NotificationManager.rvm = rvm
+    }
+
+    fun appendNotification(message: String) {
+        rvm?.appendNotification(message)
     }
 }

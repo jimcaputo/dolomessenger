@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 fun ActivationScreen(
     onStateChange: (String) -> Unit
 ) {
-    // Create variable that updates UI, since DoLoServerAPI is not a View Model
+    // Create UI variable to update UI, since DoLoServerAPI is not a View Model
     var server by rememberSaveable { mutableStateOf(DoLoServerAPI.server) }
 
     Column(

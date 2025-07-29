@@ -15,8 +15,10 @@ class PushNotificationService: FirebaseMessagingService() {
         super.onMessageReceived(message)
 
         if (message.notification != null) {
-            val body = message.notification?.body ?: "<empty message>"
-            NotificationManager.rvm.appendNotification(body)
+            val body = message.notification?.body ?: ""
+            if (body != "") {
+                NotificationManager.appendNotification(body)
+            }
         }
     }
 }

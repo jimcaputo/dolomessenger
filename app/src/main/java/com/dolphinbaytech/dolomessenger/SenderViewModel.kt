@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModel
 
 class SenderViewModel : ViewModel() {
     var helpPhrase by mutableStateOf("I need help Don")
-    var helpPhraseTriggered by mutableStateOf(false)
+    var helpPhraseTriggered: Boolean = false
     var activationPhrase by mutableStateOf("Send Message")
+    private var activationPhraseTimestamp: Long = 0     // Time of last mention of the ActivationPhrase
+    private val activationPhraseCaptureTime = 5
     var messages by mutableStateOf("Activated messages")
     var transcription by mutableStateOf("Full transcription")
     var errors by mutableStateOf("Errors")
@@ -44,7 +46,13 @@ class SenderViewModel : ViewModel() {
     fun onTranscription(transcription: String) {
         appendTranscription(transcription)
 
-        if (transcription.contains(helpPhrase, ignoreCase = true)) {
+        if (activationPhraseTimestamp > 0  &&
+            activationPhraseTimestamp + activationPhraseCaptureTime < System.currentTimeMillis() / 1000L) {
+            // This can occur after the ActivationPhrase is captured, but no message follows it. See comment below
+            appendMessage(transcription)
+            activationPhraseTimestamp = 0   // Reset so that follow on transcription text goes through normal flow
+        }
+        else if (transcription.contains(helpPhrase, ignoreCase = true)) {
             DoLoServerAPI.broadcastMessage(helpPhrase, this)
 
             helpPhraseTriggered = true
@@ -55,7 +63,17 @@ class SenderViewModel : ViewModel() {
         }
         else if (transcription.indexOf(activationPhrase, ignoreCase = true) > -1) {
             val startIndex = transcription.indexOf(activationPhrase, ignoreCase = true) + activationPhrase.length
-            appendMessage(transcription.substring(startIndex))
+            val message = transcription.substring(startIndex)
+            if (message != "") {
+                appendMessage(message)
+            }
+            else {
+                // We can land here when the activationPhrase was triggered, but the subsequent message was not
+                // communicated quickly enough. So we will assume that the next message within
+                // activationPhraseCaptureTime seconds is what we need to send as a notification.
+                activationPhraseTimestamp = System.currentTimeMillis() / 1000L
+            }
+
         }
     }
 

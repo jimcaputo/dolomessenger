@@ -83,7 +83,9 @@ object SpeechRecognitionManager: RecognitionListener {
         val words = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
 
         if (words != null) {
-            svm.onTranscription(words[0])
+            if (words[0] != "") {
+                svm.onTranscription(words[0])
+            }
 
             if (active) {
                 speechRecognizer.startListening(speechIntent)
