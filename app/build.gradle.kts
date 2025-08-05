@@ -14,8 +14,8 @@ android {
         applicationId = "com.dolphinbaytech.dolomessenger"
         minSdk = 33
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.6"
+        versionCode = 8
+        versionName = "0.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

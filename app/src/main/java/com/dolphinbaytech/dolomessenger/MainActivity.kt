@@ -39,6 +39,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        SpeechRecognitionManager.destroy()
+    }
+
     private fun requestPermissions() {
         var permissions = emptyArray<String>()
 

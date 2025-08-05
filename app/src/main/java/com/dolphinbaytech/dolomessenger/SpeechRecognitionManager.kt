@@ -34,9 +34,14 @@ object SpeechRecognitionManager: RecognitionListener {
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         speechIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
         speechIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+        speechIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2000)
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         speechRecognizer.setRecognitionListener(this)
+    }
+
+    fun destroy() {
+        speechRecognizer.destroy()
     }
 
     fun start(svm: SenderViewModel) {
@@ -88,6 +93,7 @@ object SpeechRecognitionManager: RecognitionListener {
             }
 
             if (active) {
+                speechRecognizer.cancel()
                 speechRecognizer.startListening(speechIntent)
             }
         }

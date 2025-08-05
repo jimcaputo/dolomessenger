@@ -10,11 +10,12 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 
 class SenderViewModel : ViewModel() {
-    var helpPhrase by mutableStateOf("I need help Don")
-    var helpPhraseTriggered: Boolean = false
+    var helpPhrase by mutableStateOf("I need help Donald")
+    var helpPhraseTriggered by mutableStateOf(false)
     var activationPhrase by mutableStateOf("Send Message")
-    private var activationPhraseTimestamp: Long = 0     // Time of last mention of the ActivationPhrase
-    private val activationPhraseCaptureTime = 5
+    var activationPhraseTriggered: Boolean = false
+    private val ACTIVATION_PHRASE_CAPTURE_TIME = 5000L      // 5 seconds
+
     var messages by mutableStateOf("Activated messages")
     var transcription by mutableStateOf("Full transcription")
     var errors by mutableStateOf("Errors")
@@ -46,11 +47,9 @@ class SenderViewModel : ViewModel() {
     fun onTranscription(transcription: String) {
         appendTranscription(transcription)
 
-        if (activationPhraseTimestamp > 0  &&
-            activationPhraseTimestamp + activationPhraseCaptureTime < System.currentTimeMillis() / 1000L) {
-            // This can occur after the ActivationPhrase is captured, but no message follows it. See comment below
+        if (activationPhraseTriggered) {
             appendMessage(transcription)
-            activationPhraseTimestamp = 0   // Reset so that follow on transcription text goes through normal flow
+            activationPhraseTriggered = false
         }
         else if (transcription.contains(helpPhrase, ignoreCase = true)) {
             DoLoServerAPI.broadcastMessage(helpPhrase, this)
@@ -70,10 +69,15 @@ class SenderViewModel : ViewModel() {
             else {
                 // We can land here when the activationPhrase was triggered, but the subsequent message was not
                 // communicated quickly enough. So we will assume that the next message within
-                // activationPhraseCaptureTime seconds is what we need to send as a notification.
-                activationPhraseTimestamp = System.currentTimeMillis() / 1000L
-            }
+                // ACTIVATION_PHRASE_CAPTURE_TIME seconds is what we need to send as a notification.
 
+                activationPhraseTriggered = true    // Signals that the next message is intended for notification
+
+                object : CountDownTimer(ACTIVATION_PHRASE_CAPTURE_TIME, ACTIVATION_PHRASE_CAPTURE_TIME) {
+                    override fun onTick(millisUntilFinished: Long) { }
+                    override fun onFinish() { activationPhraseTriggered = false }
+                }.start()
+            }
         }
     }
 
@@ -90,9 +94,9 @@ class SenderViewModel : ViewModel() {
 
     private fun appendMessage(message: String) {
         if (messages != "") messages += "\n"
-        messages += message
+        messages += message.trim()
 
-        DoLoServerAPI.broadcastMessage(message, this)
+        DoLoServerAPI.broadcastMessage(message.trim(), this)
     }
 
     private fun appendTranscription(text: String) {
